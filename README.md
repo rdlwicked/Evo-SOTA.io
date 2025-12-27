@@ -1,2 +1,126 @@
-# Evo-SOTA.io
-This website is for the collection of VLA SOTA results.
+# VLA SOTA Leaderboard
+
+[![Deploy to GitHub Pages](https://github.com/MINT-SJTU/Evo-SOTA.io/actions/workflows/deploy.yml/badge.svg)](https://github.com/MINT-SJTU/Evo-SOTA.io/actions/workflows/deploy.yml)
+
+A comprehensive leaderboard tracking the state-of-the-art (SOTA) performance of Vision-Language-Action (VLA) models across multiple robotics benchmarks.
+
+🌐 **Live Demo**: [https://mint-sjtu.github.io/Evo-SOTA.io](https://mint-sjtu.github.io/Evo-SOTA.io)
+
+## 📊 Supported Benchmarks
+
+| Benchmark      | Description                                                              | Primary Metric                |
+| -------------- | ------------------------------------------------------------------------ | ----------------------------- |
+| **LIBERO**     | Lifelong robot learning with 130 language-conditioned manipulation tasks | Average Success Rate (%)      |
+| **CALVIN**     | Long-horizon language-conditioned tasks (ABC→D, ABCD→D, D→D settings)    | Average Completed Tasks (0-5) |
+| **Meta-World** | Multi-task learning with 50 distinct robotic manipulation tasks          | Average Success Rate (%)      |
+
+## ✨ Features
+
+- 📈 **Interactive Leaderboards** - Sortable tables with expandable details for each model
+- 📉 **Progress Visualization** - Scatter plot showing VLA development over time
+- 🌍 **Bilingual Support** - English and Chinese (中文) interface
+- 📱 **Responsive Design** - Works on desktop and mobile devices
+- 📊 **Visitor Statistics** - Built-in visitor counter using Busuanzi
+
+## 🛠️ Tech Stack
+
+- **Framework**: [Next.js 14](https://nextjs.org/) (App Router)
+- **Styling**: [Tailwind CSS](https://tailwindcss.com/)
+- **Charts**: [Recharts](https://recharts.org/)
+- **Deployment**: GitHub Pages (Static Export)
+- **Language**: TypeScript
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+- Node.js 18+ 
+- npm or pnpm
+
+### Installation
+
+```bash
+# Clone the repository
+git clone https://github.com/MINT-SJTU/Evo-SOTA.io.git
+cd Evo-SOTA.io
+
+# Install dependencies
+npm install
+
+# Start development server
+npm run dev
+```
+
+Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+### Build for Production
+
+```bash
+npm run build
+```
+
+The static files will be generated in the `out/` directory.
+
+## 📁 Project Structure
+
+```
+Evo-SOTA.io/
+├── app/                    # Next.js App Router pages
+│   ├── page.tsx           # Homepage
+│   ├── methodology/       # Methodology page
+│   └── benchmarks/        # Benchmark leaderboard pages
+│       ├── libero/
+│       ├── calvin/
+│       └── metaworld/
+├── components/            # React components
+├── data/                  # JSON data files & processing scripts
+│   ├── libero.json
+│   ├── calvin.json
+│   ├── metaworld.json
+│   └── DataProcess.py     # CSV to JSON converter
+├── lib/                   # Utilities & i18n
+└── public/               # Static assets
+```
+
+## 📝 Adding New Models
+
+1. Update the source CSV file (`data/VLA_SOTA.csv`)
+2. Run the data processing script:
+   ```bash
+   cd data
+   python DataProcess.py
+   ```
+3. Copy updated JSON files to `public/data/`:
+   ```bash
+   cp data/*.json public/data/
+   ```
+4. Commit and push changes
+
+## 🤝 Contributing
+
+Contributions are welcome! If you'd like to:
+
+- **Add a new model**: Please provide the paper link and benchmark scores
+- **Report an error**: Open an issue with details
+- **Suggest improvements**: PRs are appreciated
+
+## ⚠️ Disclaimer
+
+- All benchmark results are collected from original papers or reproduced by third parties
+- Results may vary due to different evaluation protocols, random seeds, or implementation details
+- This leaderboard is for research reference only and does not represent official rankings
+- Please verify results with original papers before citation
+
+## 📄 License
+
+This project is open source and available under the [MIT License](LICENSE).
+
+## 🙏 Acknowledgments
+
+- Thanks to all researchers who contributed to the VLA field
+- Benchmark creators: LIBERO, CALVIN, Meta-World teams
+- [Busuanzi](http://busuanzi.ibruce.info/) for visitor statistics
+
+---
+
+**Note**: This is a community-maintained project. For official benchmark results, please refer to the original papers and repositories.

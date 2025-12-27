@@ -1,0 +1,71 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+    --foreground-rgb: 15, 23, 42;
+    --background-start-rgb: 248, 250, 252;
+    --background-end-rgb: 241, 245, 249;
+}
+
+body {
+    color: rgb(var(--foreground-rgb));
+    background: linear-gradient(to bottom,
+            rgb(var(--background-start-rgb)),
+            rgb(var(--background-end-rgb)));
+    min-height: 100vh;
+}
+
+@layer utilities {
+    .text-balance {
+        text-wrap: balance;
+    }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f5f9;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+}
+
+/* Table row hover effect */
+.table-row-hover:hover {
+    background-color: rgba(59, 130, 246, 0.05);
+}
+
+/* Smooth transitions */
+.transition-smooth {
+    transition: all 0.2s ease-in-out;
+}
+
+/* Card hover effect */
+.card-hover {
+    @apply transition-all duration-200 hover:shadow-lg hover:-translate-y-1;
+}
+
+/* Rank badge styles */
+.rank-1 {
+    @apply bg-yellow-100 text-yellow-800 border-yellow-300;
+}
+
+.rank-2 {
+    @apply bg-gray-100 text-gray-700 border-gray-300;
+}
+
+.rank-3 {
+    @apply bg-orange-100 text-orange-800 border-orange-300;
+}
