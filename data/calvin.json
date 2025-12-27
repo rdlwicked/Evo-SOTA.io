@@ -367,6 +367,19 @@
       "rank": 14
     },
     {
+      "name": "Dita",
+      "paper_url": "https://arxiv.org/abs/2410.15959v4",
+      "pub_date": "2025-03",
+      "inst1": 0.945,
+      "inst2": 0.825,
+      "inst3": 0.738,
+      "inst4": 0.613,
+      "inst5": 0.5,
+      "avg_len": 3.61,
+      "source": "original",
+      "rank": 15
+    },
+    {
       "name": "CLOVER",
       "paper_url": "https://arxiv.org/pdf/2409.09016",
       "pub_date": "2024-09",
@@ -377,7 +390,7 @@
       "inst5": 0.454,
       "avg_len": 3.53,
       "source": "original",
-      "rank": 15
+      "rank": 16
     },
     {
       "name": "RoboDual",
@@ -390,7 +403,7 @@
       "inst5": 0.488,
       "avg_len": 3.47,
       "source": "original",
-      "rank": 16
+      "rank": 17
     },
     {
       "name": "Vidman",
@@ -403,7 +416,7 @@
       "inst5": 0.467,
       "avg_len": 3.42,
       "source": "original",
-      "rank": 17
+      "rank": 18
     },
     {
       "name": "3D Diffuser Actor",
@@ -416,7 +429,7 @@
       "inst5": 0.412,
       "avg_len": 3.35,
       "source": "original",
-      "rank": 18
+      "rank": 19
     },
     {
       "name": "Moto",
@@ -429,7 +442,7 @@
       "inst5": 0.386,
       "avg_len": 3.1,
       "source": "original",
-      "rank": 19
+      "rank": 20
     },
     {
       "name": "GR-1",
@@ -442,7 +455,7 @@
       "inst5": 0.401,
       "avg_len": 3.06,
       "source": "original",
-      "rank": 20
+      "rank": 21
     },
     {
       "name": "OE-VLA",
@@ -455,7 +468,7 @@
       "inst5": 0.334,
       "avg_len": 2.99,
       "source": "original",
-      "rank": 21
+      "rank": 22
     },
     {
       "name": "DeeR-VLA",
@@ -468,7 +481,7 @@
       "inst5": null,
       "avg_len": 2.9,
       "source": "original",
-      "rank": 22
+      "rank": 23
     },
     {
       "name": "RoboFlamingo",
@@ -481,7 +494,7 @@
       "inst5": 0.235,
       "avg_len": 2.48,
       "source": "original",
-      "rank": 23
+      "rank": 24
     },
     {
       "name": "RationalVLA",
@@ -494,7 +507,7 @@
       "inst5": 0.236,
       "avg_len": 2.48,
       "source": "original",
-      "rank": 24
+      "rank": 25
     },
     {
       "name": "ReinboT",
@@ -507,7 +520,7 @@
       "inst5": 0.21,
       "avg_len": 2.26,
       "source": "original",
-      "rank": 25
+      "rank": 26
     },
     {
       "name": "SPIL",
@@ -520,7 +533,7 @@
       "inst5": 0.08,
       "avg_len": 1.71,
       "source": "original",
-      "rank": 26
+      "rank": 27
     },
     {
       "name": "MDT",
@@ -533,7 +546,7 @@
       "inst5": 0.091,
       "avg_len": 1.55,
       "source": "from FLOWER & VPP",
-      "rank": 27
+      "rank": 28
     },
     {
       "name": "UniPi",
@@ -546,7 +559,7 @@
       "inst5": 0.04,
       "avg_len": 0.92,
       "source": "from VPP & SuSIE",
-      "rank": 28
+      "rank": 29
     },
     {
       "name": "RT-1",
@@ -559,7 +572,7 @@
       "inst5": 0.013,
       "avg_len": 0.9,
       "source": "from VPP & RoboUniview & RoboDual",
-      "rank": 29
+      "rank": 30
     },
     {
       "name": "HULC",
@@ -572,7 +585,7 @@
       "inst5": 0.011,
       "avg_len": 0.67,
       "source": "original",
-      "rank": 30
+      "rank": 31
     },
     {
       "name": "Diffusion Policy",
@@ -585,7 +598,7 @@
       "inst5": 0.0,
       "avg_len": 0.56,
       "source": "from UP-VLA",
-      "rank": 31
+      "rank": 32
     },
     {
       "name": "MCIL",
@@ -598,7 +611,7 @@
       "inst5": 0.0,
       "avg_len": 0.31,
       "source": "from RoboDual",
-      "rank": 32
+      "rank": 33
     },
     {
       "name": "SuSIE",
@@ -611,7 +624,7 @@
       "inst5": 0.26,
       "avg_len": null,
       "source": "original",
-      "rank": 33
+      "rank": 34
     },
     {
       "name": "LCBC",
@@ -624,7 +637,7 @@
       "inst5": 0.06,
       "avg_len": null,
       "source": "original",
-      "rank": 34
+      "rank": 35
     }
   ],
   "d_d": [

@@ -78,6 +78,19 @@
     "rank": 6
   },
   {
+    "name": "DexVLA",
+    "paper_url": "https://arxiv.org/abs/2502.05855",
+    "pub_date": "2025-08",
+    "spatial": 97.2,
+    "object": 99.1,
+    "goal": 95.6,
+    "long": null,
+    "libero_90": null,
+    "average": 97.3,
+    "source": "original",
+    "rank": 7
+  },
+  {
     "name": "Flower VLA",
     "paper_url": "https://arxiv.org/pdf/2509.04996",
     "pub_date": "2025-09",
@@ -88,7 +101,7 @@
     "libero_90": 94.7,
     "average": 96.9,
     "source": "original",
-    "rank": 7
+    "rank": 8
   },
   {
     "name": "MemoryVLA",
@@ -101,7 +114,7 @@
     "libero_90": 95.6,
     "average": 96.5,
     "source": "original",
-    "rank": 8
+    "rank": 9
   },
   {
     "name": "dVLA",
@@ -114,7 +127,7 @@
     "libero_90": null,
     "average": 96.4,
     "source": "original",
-    "rank": 9
+    "rank": 10
   },
   {
     "name": "Discrete Diffusion VLA",
@@ -127,7 +140,7 @@
     "libero_90": null,
     "average": 96.3,
     "source": "original",
-    "rank": 10
+    "rank": 11
   },
   {
     "name": "UniVLA",
@@ -140,7 +153,7 @@
     "libero_90": null,
     "average": 95.5,
     "source": "original",
-    "rank": 11
+    "rank": 12
   },
   {
     "name": "DepthVLA",
@@ -153,7 +166,7 @@
     "libero_90": null,
     "average": 94.9,
     "source": "original",
-    "rank": 12
+    "rank": 13
   },
   {
     "name": "Evo-1",
@@ -166,7 +179,7 @@
     "libero_90": null,
     "average": 94.8,
     "source": "original",
-    "rank": 13
+    "rank": 14
   },
   {
     "name": "BitVLA",
@@ -179,7 +192,7 @@
     "libero_90": null,
     "average": 94.8,
     "source": "original",
-    "rank": 14
+    "rank": 15
   },
   {
     "name": "VLA-0",
@@ -192,7 +205,7 @@
     "libero_90": null,
     "average": 94.7,
     "source": "original",
-    "rank": 15
+    "rank": 16
   },
   {
     "name": "OpenVLA-OFT",
@@ -205,7 +218,7 @@
     "libero_90": null,
     "average": 94.5,
     "source": "original",
-    "rank": 16
+    "rank": 17
   },
   {
     "name": "pi0.5-KI",
@@ -218,7 +231,7 @@
     "libero_90": 96.0,
     "average": 94.3,
     "source": "original",
-    "rank": 17
+    "rank": 18
   },
   {
     "name": "pi0",
@@ -231,7 +244,7 @@
     "libero_90": null,
     "average": 94.2,
     "source": "From evo-1 & VLA-0 & pi0.5KI",
-    "rank": 18
+    "rank": 19
   },
   {
     "name": "GR00T-N1",
@@ -244,7 +257,7 @@
     "libero_90": null,
     "average": 93.9,
     "source": "From VLA-0",
-    "rank": 19
+    "rank": 20
   },
   {
     "name": "DreamVLA",
@@ -257,7 +270,7 @@
     "libero_90": null,
     "average": 92.6,
     "source": "original",
-    "rank": 20
+    "rank": 21
   },
   {
     "name": "GraspVLA",
@@ -270,7 +283,7 @@
     "libero_90": null,
     "average": 89.1,
     "source": "original",
-    "rank": 21
+    "rank": 22
   },
   {
     "name": "SmolVLA",
@@ -283,7 +296,7 @@
     "libero_90": null,
     "average": 88.8,
     "source": "original",
-    "rank": 22
+    "rank": 23
   },
   {
     "name": "4D-VLA",
@@ -296,7 +309,7 @@
     "libero_90": null,
     "average": 88.6,
     "source": "original",
-    "rank": 23
+    "rank": 24
   },
   {
     "name": "NORA",
@@ -309,7 +322,7 @@
     "libero_90": null,
     "average": 87.9,
     "source": "original",
-    "rank": 24
+    "rank": 25
   },
   {
     "name": "FPC-VLA",
@@ -322,7 +335,7 @@
     "libero_90": null,
     "average": 86.9,
     "source": "original",
-    "rank": 25
+    "rank": 26
   },
   {
     "name": "InSpire",
@@ -335,7 +348,7 @@
     "libero_90": null,
     "average": 86.7,
     "source": "original",
-    "rank": 26
+    "rank": 27
   },
   {
     "name": "MolmoAct",
@@ -348,7 +361,7 @@
     "libero_90": null,
     "average": 86.6,
     "source": "original",
-    "rank": 27
+    "rank": 28
   },
   {
     "name": "pi0-FAST",
@@ -361,7 +374,7 @@
     "libero_90": null,
     "average": 85.5,
     "source": "from evo-1 & pi0.5KI",
-    "rank": 28
+    "rank": 29
   },
   {
     "name": "OTTER",
@@ -374,7 +387,7 @@
     "libero_90": null,
     "average": 85.0,
     "source": "original",
-    "rank": 29
+    "rank": 30
   },
   {
     "name": "ThinkAct",
@@ -387,7 +400,7 @@
     "libero_90": null,
     "average": 84.4,
     "source": "original",
-    "rank": 30
+    "rank": 31
   },
   {
     "name": "Eva-VLA (OpenVLA+Theta)",
@@ -400,7 +413,20 @@
     "libero_90": null,
     "average": 82.6,
     "source": "original",
-    "rank": 31
+    "rank": 32
+  },
+  {
+    "name": "Dita",
+    "paper_url": "https://arxiv.org/abs/2410.15959v4",
+    "pub_date": "2025-03",
+    "spatial": 84.2,
+    "object": 96.3,
+    "goal": 85.4,
+    "long": 63.8,
+    "libero_90": null,
+    "average": 82.4,
+    "source": "original",
+    "rank": 33
   },
   {
     "name": "WorldVLA",
@@ -413,7 +439,7 @@
     "libero_90": null,
     "average": 81.8,
     "source": "original",
-    "rank": 32
+    "rank": 34
   },
   {
     "name": "CoT-VLA",
@@ -426,7 +452,7 @@
     "libero_90": null,
     "average": 81.1,
     "source": "original",
-    "rank": 33
+    "rank": 35
   },
   {
     "name": "VLA-RL",
@@ -439,7 +465,7 @@
     "libero_90": null,
     "average": 81.0,
     "source": "original",
-    "rank": 34
+    "rank": 36
   },
   {
     "name": "GRAPE",
@@ -452,7 +478,7 @@
     "libero_90": null,
     "average": 80.2,
     "source": "original",
-    "rank": 35
+    "rank": 37
   },
   {
     "name": "CoA-VLA",
@@ -465,7 +491,20 @@
     "libero_90": null,
     "average": 79.8,
     "source": "original",
-    "rank": 36
+    "rank": 38
+  },
+  {
+    "name": "Chain of Affordance",
+    "paper_url": "https://arxiv.org/abs/2412.20451",
+    "pub_date": "2024-12",
+    "spatial": 85.3,
+    "object": 93.1,
+    "goal": 85.8,
+    "long": 55.0,
+    "libero_90": null,
+    "average": 79.8,
+    "source": "original",
+    "rank": 39
   },
   {
     "name": "SpatialVLA",
@@ -478,7 +517,7 @@
     "libero_90": null,
     "average": 78.1,
     "source": "original",
-    "rank": 37
+    "rank": 40
   },
   {
     "name": "OpenVLA",
@@ -491,7 +530,7 @@
     "libero_90": null,
     "average": 76.5,
     "source": "from evo-1 & VLA-0 & MolmoAct",
-    "rank": 38
+    "rank": 41
   },
   {
     "name": "Octo",
@@ -504,7 +543,7 @@
     "libero_90": null,
     "average": 75.1,
     "source": "from 4D-VLA & VLA-0 & OpenVLA-OFT & MolmoAct",
-    "rank": 39
+    "rank": 42
   },
   {
     "name": "TraceVLA",
@@ -517,7 +556,7 @@
     "libero_90": null,
     "average": 74.8,
     "source": "from NORA & MolmoAct",
-    "rank": 40
+    "rank": 43
   },
   {
     "name": "MDT",
@@ -530,7 +569,7 @@
     "libero_90": 67.2,
     "average": 74.3,
     "source": "original",
-    "rank": 41
+    "rank": 44
   },
   {
     "name": "UniAct",
@@ -543,7 +582,7 @@
     "libero_90": 73.0,
     "average": 74.0,
     "source": "original",
-    "rank": 42
+    "rank": 45
   },
   {
     "name": "TTF-VLA (VLA-cache+TTF)",
@@ -556,7 +595,7 @@
     "libero_90": null,
     "average": 74.0,
     "source": "original",
-    "rank": 43
+    "rank": 46
   },
   {
     "name": "TriVLA",
@@ -569,7 +608,7 @@
     "libero_90": null,
     "average": 73.2,
     "source": "original",
-    "rank": 44
+    "rank": 47
   },
   {
     "name": "Diffusion Policy",
@@ -582,7 +621,7 @@
     "libero_90": null,
     "average": 72.4,
     "source": "From 4D-VLA & VLA-0 & OpenVLA-OFT",
-    "rank": 45
+    "rank": 48
   },
   {
     "name": "Transformer-BC",
@@ -595,7 +634,7 @@
     "libero_90": null,
     "average": 60.82,
     "source": "original",
-    "rank": 46
+    "rank": 49
   },
   {
     "name": "Distill-D",
@@ -608,7 +647,7 @@
     "libero_90": 49.9,
     "average": 56.0,
     "source": "from MDT",
-    "rank": 47
+    "rank": 50
   },
   {
     "name": "VQ-VLA",
@@ -621,7 +660,7 @@
     "libero_90": 81.0,
     "average": null,
     "source": "original",
-    "rank": 48
+    "rank": 51
   },
   {
     "name": "Baku",
@@ -634,7 +673,7 @@
     "libero_90": 90.0,
     "average": null,
     "source": "original",
-    "rank": 49
+    "rank": 52
   },
   {
     "name": "MoDE",
@@ -647,7 +686,7 @@
     "libero_90": 95.0,
     "average": null,
     "source": "original",
-    "rank": 50
+    "rank": 53
   },
   {
     "name": "Seer-Large",
@@ -660,7 +699,7 @@
     "libero_90": null,
     "average": null,
     "source": "original",
-    "rank": 51
+    "rank": 54
   },
   {
     "name": "MPI",
@@ -673,7 +712,7 @@
     "libero_90": null,
     "average": null,
     "source": "from Seer",
-    "rank": 52
+    "rank": 55
   },
   {
     "name": "MVP",
@@ -686,7 +725,7 @@
     "libero_90": null,
     "average": null,
     "source": "from Seer",
-    "rank": 53
+    "rank": 56
   },
   {
     "name": "MT-ACT",
@@ -699,6 +738,6 @@
     "libero_90": null,
     "average": null,
     "source": "from Seer",
-    "rank": 54
+    "rank": 57
   }
 ]

@@ -1,6 +1,6 @@
 {
   "libero": {
-    "total_models": 54,
+    "total_models": 57,
     "primary_metric": "Average Success Rate (%)",
     "top_5": [
       {
@@ -31,7 +31,7 @@
     ]
   },
   "metaworld": {
-    "total_models": 11,
+    "total_models": 12,
     "primary_metric": "Average Success Rate (%)",
     "top_5": [
       {
@@ -62,7 +62,7 @@
     ]
   },
   "calvin": {
-    "total_models": 34,
+    "total_models": 35,
     "primary_metric": "Average Length (Avg. Len.)",
     "description": "ABC-D Setting (Default)",
     "top_5": [
@@ -94,7 +94,7 @@
     ],
     "settings": {
       "abcd_d": 14,
-      "abc_d": 34,
+      "abc_d": 35,
       "d_d": 12
     }
   }

@@ -10,6 +10,11 @@ export const metadata: Metadata = {
     title: 'VLA SOTA Leaderboard',
     description: 'Vision-Language-Action Model Benchmark Rankings - Track state-of-the-art VLA models on LIBERO, CALVIN, and Meta-World benchmarks.',
     keywords: ['VLA', 'Vision-Language-Action', 'Robotics', 'Benchmark', 'Leaderboard', 'LIBERO', 'CALVIN', 'Meta-World'],
+    icons: {
+        icon: '/logo/EvoMind0.png',
+        shortcut: '/logo/EvoMind0.png',
+        apple: '/logo/EvoMind0.png',
+    },
 };
 
 export default function RootLayout({
@@ -29,7 +34,7 @@ export default function RootLayout({
                         <footer className="bg-slate-800 text-white py-6">
                             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                                 <div className="text-center text-sm text-slate-400">
-                                    <p>© 2024 VLA SOTA Leaderboard. Data collected from published papers.</p>
+                                    <p>© 2025 VLA SOTA Leaderboard. Data collected from published papers. </p>
                                     <p className="mt-1">
                                         <a
                                             href="https://github.com/MINT-SJTU/Evo-SOTA.io"
@@ -37,7 +42,7 @@ export default function RootLayout({
                                             rel="noopener noreferrer"
                                             className="hover:text-white transition-colors"
                                         >
-                                            GitHub Repository
+                                            EvoMind & SJTU
                                         </a>
                                     </p>
                                 </div>

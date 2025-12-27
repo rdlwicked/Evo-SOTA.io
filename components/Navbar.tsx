@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { useState } from 'react';
 import dynamic from 'next/dynamic';
 import { useLanguage } from '@/lib/LanguageContext';
@@ -26,6 +27,9 @@ export default function Navbar() {
         { name: 'Meta-World', href: '/benchmarks/metaworld' },
     ];
 
+    // 获取 basePath
+    const basePath = process.env.NODE_ENV === 'production' ? '/Evo-SOTA.io' : '';
+
     return (
         <nav className="bg-white shadow-sm border-b border-slate-200 sticky top-0 z-50">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -33,11 +37,22 @@ export default function Navbar() {
                     {/* Logo */}
                     <div className="flex items-center">
                         <Link href="/" className="flex items-center space-x-2">
-                            <div className="w-8 h-8 bg-primary-600 rounded-lg flex items-center justify-center">
-                                <span className="text-white font-bold text-sm">VLA</span>
-                            </div>
-                            <span className="font-semibold text-lg text-slate-800 hidden sm:block">
-                                SOTA Leaderboard
+                            <Image
+                                src={`${basePath}/logo/EvoMind1.png`}
+                                alt="EvoMind Logo"
+                                width={108}
+                                height={36}
+                                className="rounded"
+                            />
+                            <Image
+                                src={`${basePath}/logo/SJTU.png`}
+                                alt="SJTU Logo"
+                                width={36}
+                                height={36}
+                                className="rounded"
+                            />
+                            <span className="hidden sm:inline-block px-3 py-1 bg-primary-550 text-white font-bold text-sm rounded-lg">
+                                VLA SOTA
                             </span>
                         </Link>
                     </div>
