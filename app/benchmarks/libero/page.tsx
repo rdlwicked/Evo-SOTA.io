@@ -54,7 +54,7 @@ export default function LiberoPage() {
             github: 'Code',
             clickToExpand: 'Click row to expand details',
             metrics: 'Sub-metrics',
-            showClosedSource: 'Include Closed-Source Models',
+            showAllModels: 'Include All Models',
             openSourceOnly: 'Open-Source Only',
             appendix: 'Appendix: Non-Standard Evaluation',
             appendixDesc: 'Models below did not follow the standard evaluation protocol. Results may not be directly comparable.',
@@ -62,7 +62,6 @@ export default function LiberoPage() {
             hideAppendix: 'Hide Appendix',
             standardModels: 'Standard Evaluation Models',
             opensource: 'Open Source',
-            closedSource: 'Closed Source',
             note: 'Note',
         },
         zh: {
@@ -79,7 +78,7 @@ export default function LiberoPage() {
             github: '代码',
             clickToExpand: '点击行展开详情',
             metrics: '分项指标',
-            showClosedSource: '包含未开源模型',
+            showAllModels: '显示全部模型',
             openSourceOnly: '仅开源模型',
             appendix: '附录：非标准测试',
             appendixDesc: '以下模型未遵循标准评估协议，结果可能无法直接比较。',
@@ -87,7 +86,6 @@ export default function LiberoPage() {
             hideAppendix: '隐藏附录',
             standardModels: '标准测试模型',
             opensource: '开源',
-            closedSource: '未开源',
             note: '备注',
         }
     };
@@ -243,13 +241,9 @@ export default function LiberoPage() {
                                         <td className="px-4 py-3">
                                             <div className="flex items-center gap-2">
                                                 <span className="font-medium text-slate-800">{model.name}</span>
-                                                {model.is_opensource ? (
+                                                {model.is_opensource && (
                                                     <span className="px-1.5 py-0.5 bg-green-100 text-green-700 text-xs rounded">
                                                         {t.opensource}
-                                                    </span>
-                                                ) : (
-                                                    <span className="px-1.5 py-0.5 bg-gray-100 text-gray-600 text-xs rounded">
-                                                        {t.closedSource}
                                                     </span>
                                                 )}
                                             </div>
@@ -440,7 +434,7 @@ export default function LiberoPage() {
                                 : 'bg-white text-purple-600 border border-purple-200 hover:bg-purple-50'
                                 }`}
                         >
-                            {showClosedSource ? t.showClosedSource : t.openSourceOnly}
+                            {showClosedSource ? t.showAllModels : t.openSourceOnly}
                         </button>
                     </div>
                     <p className="text-sm text-slate-500">{t.clickToExpand}</p>
@@ -463,7 +457,7 @@ export default function LiberoPage() {
                     </div>
                 </div>
 
-                {/* Appendix Section */}
+                {/* Appendix Section - 暂时注释掉，可能在未来更新中启用
                 {appendixData.length > 0 && (
                     <div className="mt-12">
                         <div className="flex items-center justify-between mb-4">
@@ -488,6 +482,7 @@ export default function LiberoPage() {
                         )}
                     </div>
                 )}
+                */}
             </div>
         </div>
     );

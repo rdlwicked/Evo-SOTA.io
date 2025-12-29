@@ -125,15 +125,14 @@ export default function ProgressChart() {
                 const calvin: CalvinData = await calvinRes.json();
                 const metaworld: CategorizedData<MetaworldModel> = await metaworldRes.json();
 
-                // 合并所有分类的数据（standard_opensource, standard_closed, non_standard）
-                const allLibero = [
+                // 只使用标准模型数据（standard_opensource + standard_closed）
+                const standardLibero = [
                     ...libero.standard_opensource,
-                    ...libero.standard_closed,
-                    ...libero.non_standard
+                    ...libero.standard_closed
                 ];
 
                 // 处理 LIBERO 数据
-                const liberoPoints: DataPoint[] = allLibero
+                const liberoPoints: DataPoint[] = standardLibero
                     .filter(m => m.average !== null && m.pub_date)
                     .map(m => ({
                         name: m.name,
@@ -144,15 +143,14 @@ export default function ProgressChart() {
                         paper_url: m.paper_url || undefined
                     }));
 
-                // 合并 CALVIN ABC→D 所有分类
-                const allCalvinAbcD = [
+                // 只使用 CALVIN ABC→D 标准模型
+                const standardCalvinAbcD = [
                     ...calvin.abc_d.standard_opensource,
-                    ...calvin.abc_d.standard_closed,
-                    ...calvin.abc_d.non_standard
+                    ...calvin.abc_d.standard_closed
                 ];
 
                 // 处理 CALVIN 数据 (使用 ABC→D 设置)
-                const calvinPoints: DataPoint[] = allCalvinAbcD
+                const calvinPoints: DataPoint[] = standardCalvinAbcD
                     .filter(m => m.avg_len !== null && m.pub_date)
                     .map(m => ({
                         name: m.name,
@@ -163,15 +161,14 @@ export default function ProgressChart() {
                         paper_url: m.paper_url || undefined
                     }));
 
-                // 合并所有分类的 Meta-World 数据
-                const allMetaworld = [
+                // 只使用 Meta-World 标准模型
+                const standardMetaworld = [
                     ...metaworld.standard_opensource,
-                    ...metaworld.standard_closed,
-                    ...metaworld.non_standard
+                    ...metaworld.standard_closed
                 ];
 
                 // 处理 Meta-World 数据
-                const metaworldPoints: DataPoint[] = allMetaworld
+                const metaworldPoints: DataPoint[] = standardMetaworld
                     .filter(m => m.average !== null && m.pub_date)
                     .map(m => ({
                         name: m.name,
@@ -309,136 +306,221 @@ export default function ProgressChart() {
                     </label>
                 </div>
 
-                {/* Charts Grid */}
-                <div className="grid lg:grid-cols-2 gap-6">
-                    {/* LIBERO & Meta-World Chart (共享Y轴尺度 0-100) */}
-                    {(selectedBenchmarks.includes('LIBERO') || selectedBenchmarks.includes('Meta-World')) && (
-                        <div className="bg-white rounded-xl p-6 shadow-sm border border-slate-200">
-                            <h3 className="text-lg font-semibold text-slate-700 mb-4">
-                                {selectedBenchmarks.includes('LIBERO') && t.liberoDesc}
-                                {selectedBenchmarks.includes('LIBERO') && selectedBenchmarks.includes('Meta-World') && ' & '}
-                                {selectedBenchmarks.includes('Meta-World') && t.metaworldDesc}
-                            </h3>
-                            <ResponsiveContainer width="100%" height={350}>
-                                <ScatterChart margin={{ top: 20, right: 20, bottom: 20, left: 10 }}>
-                                    <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-                                    <XAxis
-                                        type="number"
-                                        dataKey="date"
-                                        domain={[minDate, maxDate]}
-                                        tickFormatter={formatXAxis}
-                                        tick={{ fill: '#64748b', fontSize: 12 }}
-                                        axisLine={{ stroke: '#cbd5e1' }}
-                                    />
-                                    <YAxis
-                                        type="number"
-                                        dataKey="score"
-                                        domain={[0, 100]}
-                                        tick={{ fill: '#64748b', fontSize: 12 }}
-                                        axisLine={{ stroke: '#cbd5e1' }}
-                                        label={{
-                                            value: 'Success Rate (%)',
-                                            angle: -90,
-                                            position: 'insideLeft',
-                                            style: { fill: '#64748b', fontSize: 12 }
-                                        }}
-                                    />
-                                    <Tooltip content={<CustomTooltip />} />
-                                    <Legend />
+                {/* Charts Grid - 品字形排布，支持动态居中 */}
+                {(() => {
+                    const activeCharts = [];
+                    if (selectedBenchmarks.includes('LIBERO')) activeCharts.push('LIBERO');
+                    if (selectedBenchmarks.includes('Meta-World')) activeCharts.push('Meta-World');
+                    if (selectedBenchmarks.includes('CALVIN')) activeCharts.push('CALVIN');
+                    const chartCount = activeCharts.length;
 
-                                    {/* 参考线 - 重要里程碑 */}
-                                    <ReferenceLine
-                                        x={new Date(2024, 0, 1).getTime()}
-                                        stroke="#94a3b8"
-                                        strokeDasharray="5 5"
-                                        label={{ value: '2024', fill: '#94a3b8', fontSize: 10 }}
-                                    />
-                                    <ReferenceLine
-                                        x={new Date(2025, 0, 1).getTime()}
-                                        stroke="#94a3b8"
-                                        strokeDasharray="5 5"
-                                        label={{ value: '2025', fill: '#94a3b8', fontSize: 10 }}
-                                    />
+                    // 根据图表数量决定布局
+                    // 1张图：居中，占2/3宽度
+                    // 2张图：并排居中，各占约1/2宽度
+                    // 3张图：品字形（上2下1居中）
+                    const getGridClass = () => {
+                        if (chartCount === 1) return 'flex justify-center';
+                        if (chartCount === 2) return 'grid grid-cols-1 lg:grid-cols-2 gap-6';
+                        return 'grid grid-cols-1 md:grid-cols-2 gap-6';
+                    };
 
-                                    {selectedBenchmarks.includes('LIBERO') && (
-                                        <Scatter
-                                            name="LIBERO"
-                                            data={getDisplayData(liberoData)}
-                                            fill="#3b82f6"
-                                            fillOpacity={0.7}
-                                        />
-                                    )}
-                                    {selectedBenchmarks.includes('Meta-World') && (
-                                        <Scatter
-                                            name="Meta-World"
-                                            data={getDisplayData(metaworldData)}
-                                            fill="#a855f7"
-                                            fillOpacity={0.7}
-                                        />
-                                    )}
-                                </ScatterChart>
-                            </ResponsiveContainer>
+                    const renderChart = (benchmark: string, index: number) => {
+                        // 对于3张图的情况，第3张图需要居中显示
+                        const isLastInThree = chartCount === 3 && index === 2;
+                        const chartWrapperClass = isLastInThree
+                            ? 'md:col-span-2 flex justify-center'
+                            : '';
+                        // 根据图表数量设置宽度
+                        // 1张图：占页面2/3宽度（使用内联style）
+                        // 2张图：grid自动处理，各占一格
+                        // 3张图：前两张各占50%，第三张居中显示约50%宽度
+                        const chartStyle = chartCount === 1
+                            ? { width: '66.67%', minWidth: '400px' }
+                            : undefined;
+                        const chartClass = isLastInThree
+                            ? 'w-full md:w-1/2'
+                            : 'w-full';
+
+                        if (benchmark === 'LIBERO') {
+                            return (
+                                <div key="libero" className={chartWrapperClass} style={chartStyle}>
+                                    <div className={`bg-white rounded-xl p-6 shadow-sm border border-slate-200 ${chartClass}`}>
+                                        <h3 className="text-lg font-semibold text-slate-700 mb-4">
+                                            {t.liberoDesc}
+                                        </h3>
+                                        <ResponsiveContainer width="100%" height={350}>
+                                            <ScatterChart margin={{ top: 20, right: 20, bottom: 20, left: 10 }}>
+                                                <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+                                                <XAxis
+                                                    type="number"
+                                                    dataKey="date"
+                                                    domain={[minDate, maxDate]}
+                                                    tickFormatter={formatXAxis}
+                                                    tick={{ fill: '#64748b', fontSize: 12 }}
+                                                    axisLine={{ stroke: '#cbd5e1' }}
+                                                />
+                                                <YAxis
+                                                    type="number"
+                                                    dataKey="score"
+                                                    domain={[0, 100]}
+                                                    tick={{ fill: '#64748b', fontSize: 12 }}
+                                                    axisLine={{ stroke: '#cbd5e1' }}
+                                                    label={{
+                                                        value: 'Success Rate (%)',
+                                                        angle: -90,
+                                                        position: 'insideLeft',
+                                                        style: { fill: '#64748b', fontSize: 12 }
+                                                    }}
+                                                />
+                                                <Tooltip content={<CustomTooltip />} />
+                                                <Legend />
+                                                <ReferenceLine
+                                                    x={new Date(2024, 0, 1).getTime()}
+                                                    stroke="#94a3b8"
+                                                    strokeDasharray="5 5"
+                                                    label={{ value: '2024', fill: '#94a3b8', fontSize: 10 }}
+                                                />
+                                                <ReferenceLine
+                                                    x={new Date(2025, 0, 1).getTime()}
+                                                    stroke="#94a3b8"
+                                                    strokeDasharray="5 5"
+                                                    label={{ value: '2025', fill: '#94a3b8', fontSize: 10 }}
+                                                />
+                                                <Scatter
+                                                    name="LIBERO"
+                                                    data={getDisplayData(liberoData)}
+                                                    fill="#3b82f6"
+                                                    fillOpacity={0.7}
+                                                />
+                                            </ScatterChart>
+                                        </ResponsiveContainer>
+                                    </div>
+                                </div>
+                            );
+                        }
+                        if (benchmark === 'Meta-World') {
+                            return (
+                                <div key="metaworld" className={chartWrapperClass} style={chartStyle}>
+                                    <div className={`bg-white rounded-xl p-6 shadow-sm border border-slate-200 ${chartClass}`}>
+                                        <h3 className="text-lg font-semibold text-slate-700 mb-4">
+                                            {t.metaworldDesc}
+                                        </h3>
+                                        <ResponsiveContainer width="100%" height={350}>
+                                            <ScatterChart margin={{ top: 20, right: 20, bottom: 20, left: 10 }}>
+                                                <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+                                                <XAxis
+                                                    type="number"
+                                                    dataKey="date"
+                                                    domain={[minDate, maxDate]}
+                                                    tickFormatter={formatXAxis}
+                                                    tick={{ fill: '#64748b', fontSize: 12 }}
+                                                    axisLine={{ stroke: '#cbd5e1' }}
+                                                />
+                                                <YAxis
+                                                    type="number"
+                                                    dataKey="score"
+                                                    domain={[0, 100]}
+                                                    tick={{ fill: '#64748b', fontSize: 12 }}
+                                                    axisLine={{ stroke: '#cbd5e1' }}
+                                                    label={{
+                                                        value: 'Success Rate (%)',
+                                                        angle: -90,
+                                                        position: 'insideLeft',
+                                                        style: { fill: '#64748b', fontSize: 12 }
+                                                    }}
+                                                />
+                                                <Tooltip content={<CustomTooltip />} />
+                                                <Legend />
+                                                <ReferenceLine
+                                                    x={new Date(2024, 0, 1).getTime()}
+                                                    stroke="#94a3b8"
+                                                    strokeDasharray="5 5"
+                                                    label={{ value: '2024', fill: '#94a3b8', fontSize: 10 }}
+                                                />
+                                                <ReferenceLine
+                                                    x={new Date(2025, 0, 1).getTime()}
+                                                    stroke="#94a3b8"
+                                                    strokeDasharray="5 5"
+                                                    label={{ value: '2025', fill: '#94a3b8', fontSize: 10 }}
+                                                />
+                                                <Scatter
+                                                    name="Meta-World"
+                                                    data={getDisplayData(metaworldData)}
+                                                    fill="#a855f7"
+                                                    fillOpacity={0.7}
+                                                />
+                                            </ScatterChart>
+                                        </ResponsiveContainer>
+                                    </div>
+                                </div>
+                            );
+                        }
+                        if (benchmark === 'CALVIN') {
+                            return (
+                                <div key="calvin" className={chartWrapperClass} style={chartStyle}>
+                                    <div className={`bg-white rounded-xl p-6 shadow-sm border border-slate-200 ${chartClass}`}>
+                                        <h3 className="text-lg font-semibold text-slate-700 mb-4">
+                                            {t.calvinDesc}
+                                        </h3>
+                                        <ResponsiveContainer width="100%" height={350}>
+                                            <ScatterChart margin={{ top: 20, right: 20, bottom: 20, left: 10 }}>
+                                                <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+                                                <XAxis
+                                                    type="number"
+                                                    dataKey="date"
+                                                    domain={[minDate, maxDate]}
+                                                    tickFormatter={formatXAxis}
+                                                    tick={{ fill: '#64748b', fontSize: 12 }}
+                                                    axisLine={{ stroke: '#cbd5e1' }}
+                                                />
+                                                <YAxis
+                                                    type="number"
+                                                    dataKey="score"
+                                                    domain={[0, 5]}
+                                                    tick={{ fill: '#64748b', fontSize: 12 }}
+                                                    axisLine={{ stroke: '#cbd5e1' }}
+                                                    label={{
+                                                        value: 'Avg. Tasks',
+                                                        angle: -90,
+                                                        position: 'insideLeft',
+                                                        style: { fill: '#64748b', fontSize: 12 }
+                                                    }}
+                                                />
+                                                <Tooltip content={<CustomTooltip />} />
+                                                <Legend />
+                                                <ReferenceLine
+                                                    x={new Date(2024, 0, 1).getTime()}
+                                                    stroke="#94a3b8"
+                                                    strokeDasharray="5 5"
+                                                    label={{ value: '2024', fill: '#94a3b8', fontSize: 10 }}
+                                                />
+                                                <ReferenceLine
+                                                    x={new Date(2025, 0, 1).getTime()}
+                                                    stroke="#94a3b8"
+                                                    strokeDasharray="5 5"
+                                                    label={{ value: '2025', fill: '#94a3b8', fontSize: 10 }}
+                                                />
+                                                <Scatter
+                                                    name="CALVIN (ABC→D)"
+                                                    data={getDisplayData(calvinData)}
+                                                    fill="#10b981"
+                                                    fillOpacity={0.7}
+                                                />
+                                            </ScatterChart>
+                                        </ResponsiveContainer>
+                                    </div>
+                                </div>
+                            );
+                        }
+                        return null;
+                    };
+
+                    return (
+                        <div className={getGridClass()}>
+                            {activeCharts.map((benchmark, index) => renderChart(benchmark, index))}
                         </div>
-                    )}
-
-                    {/* CALVIN Chart (Y轴尺度 0-5) */}
-                    {selectedBenchmarks.includes('CALVIN') && (
-                        <div className="bg-white rounded-xl p-6 shadow-sm border border-slate-200">
-                            <h3 className="text-lg font-semibold text-slate-700 mb-4">
-                                {t.calvinDesc}
-                            </h3>
-                            <ResponsiveContainer width="100%" height={350}>
-                                <ScatterChart margin={{ top: 20, right: 20, bottom: 20, left: 10 }}>
-                                    <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-                                    <XAxis
-                                        type="number"
-                                        dataKey="date"
-                                        domain={[minDate, maxDate]}
-                                        tickFormatter={formatXAxis}
-                                        tick={{ fill: '#64748b', fontSize: 12 }}
-                                        axisLine={{ stroke: '#cbd5e1' }}
-                                    />
-                                    <YAxis
-                                        type="number"
-                                        dataKey="score"
-                                        domain={[0, 5]}
-                                        tick={{ fill: '#64748b', fontSize: 12 }}
-                                        axisLine={{ stroke: '#cbd5e1' }}
-                                        label={{
-                                            value: 'Avg. Tasks',
-                                            angle: -90,
-                                            position: 'insideLeft',
-                                            style: { fill: '#64748b', fontSize: 12 }
-                                        }}
-                                    />
-                                    <Tooltip content={<CustomTooltip />} />
-                                    <Legend />
-
-                                    {/* 参考线 */}
-                                    <ReferenceLine
-                                        x={new Date(2024, 0, 1).getTime()}
-                                        stroke="#94a3b8"
-                                        strokeDasharray="5 5"
-                                        label={{ value: '2024', fill: '#94a3b8', fontSize: 10 }}
-                                    />
-                                    <ReferenceLine
-                                        x={new Date(2025, 0, 1).getTime()}
-                                        stroke="#94a3b8"
-                                        strokeDasharray="5 5"
-                                        label={{ value: '2025', fill: '#94a3b8', fontSize: 10 }}
-                                    />
-
-                                    <Scatter
-                                        name="CALVIN (ABC→D)"
-                                        data={getDisplayData(calvinData)}
-                                        fill="#10b981"
-                                        fillOpacity={0.7}
-                                    />
-                                </ScatterChart>
-                            </ResponsiveContainer>
-                        </div>
-                    )}
-                </div>
+                    );
+                })()}
 
                 {/* Note */}
                 <p className="text-sm text-slate-500 text-center mt-6">

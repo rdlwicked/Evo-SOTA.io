@@ -144,13 +144,13 @@ export default function StatsOverview() {
 
                     {/* Benchmarks */}
                     <div className="bg-white rounded-xl p-6 shadow-sm border border-slate-200 hover:shadow-md transition-shadow">
-                        <div className="text-4xl font-bold text-emerald-600 mb-1">3</div>
+                        <div className="text-4xl font-bold text-purple-600 mb-1">3</div>
                         <div className="text-slate-600 text-sm">{t.benchmarks}</div>
                     </div>
 
                     {/* Years */}
                     <div className="bg-white rounded-xl p-6 shadow-sm border border-slate-200 hover:shadow-md transition-shadow">
-                        <div className="text-4xl font-bold text-purple-600 mb-1">3+</div>
+                        <div className="text-4xl font-bold text-emerald-600 mb-1">3+</div>
                         <div className="text-slate-600 text-sm">{t.yearsOfProgress}</div>
                     </div>
 
@@ -161,13 +161,13 @@ export default function StatsOverview() {
                             <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded-full font-medium">
                                 LIBERO: {animatedValues.liberoModels}
                             </span>
-                            <span className="px-2 py-1 bg-emerald-100 text-emerald-700 rounded-full font-medium">
-                                CALVIN: {animatedValues.calvinModels}
+                            <span className="px-2 py-1 bg-purple-100 text-purple-700 rounded-full font-medium">
+                                Meta-World: {animatedValues.metaworldModels}
                             </span>
                         </div>
                         <div className="mt-2">
-                            <span className="px-2 py-1 bg-purple-100 text-purple-700 rounded-full font-medium text-xs">
-                                Meta-World: {animatedValues.metaworldModels}
+                            <span className="px-2 py-1 bg-emerald-100 text-emerald-700 rounded-full font-medium text-xs">
+                                CALVIN: {animatedValues.calvinModels}
                             </span>
                         </div>
                     </div>
@@ -184,15 +184,15 @@ export default function StatsOverview() {
                             <div className="font-bold text-lg">{stats.topLibero.name}</div>
                             <div className="text-2xl font-mono mt-1">{stats.topLibero.score}%</div>
                         </div>
-                        <div className="bg-gradient-to-br from-emerald-500 to-emerald-600 text-white rounded-xl p-4 shadow-lg">
-                            <div className="text-xs opacity-80 mb-1">CALVIN (ABC→D)</div>
-                            <div className="font-bold text-lg">{stats.topCalvin.name}</div>
-                            <div className="text-2xl font-mono mt-1">{stats.topCalvin.score.toFixed(2)}</div>
-                        </div>
                         <div className="bg-gradient-to-br from-purple-500 to-purple-600 text-white rounded-xl p-4 shadow-lg">
                             <div className="text-xs opacity-80 mb-1">Meta-World</div>
                             <div className="font-bold text-lg">{stats.topMetaworld.name}</div>
                             <div className="text-2xl font-mono mt-1">{stats.topMetaworld.score}%</div>
+                        </div>
+                        <div className="bg-gradient-to-br from-emerald-500 to-emerald-600 text-white rounded-xl p-4 shadow-lg">
+                            <div className="text-xs opacity-80 mb-1">CALVIN (ABC→D)</div>
+                            <div className="font-bold text-lg">{stats.topCalvin.name}</div>
+                            <div className="text-2xl font-mono mt-1">{stats.topCalvin.score.toFixed(2)}</div>
                         </div>
                     </div>
                 </div>

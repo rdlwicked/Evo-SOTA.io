@@ -75,7 +75,7 @@ export default function Home() {
         loadData();
     }, []);
 
-    // 构建 benchmarks 数据
+    // 构建 benchmarks 数据 - metaworld 放在中间
     const benchmarks = [
         {
             id: 'libero',
@@ -91,19 +91,6 @@ export default function Home() {
             color: 'blue',
         },
         {
-            id: 'calvin',
-            name: t.benchmarkDesc.calvin.name,
-            description: t.benchmarkDesc.calvin.description,
-            metric: t.benchmarkDesc.calvin.metric,
-            modelCount: summaryData?.calvin.standard_opensource_count || 0,
-            topModels: summaryData?.calvin.top_5.map(m => ({
-                rank: m.rank,
-                name: m.name,
-                score: m.score,
-            })) || [],
-            color: 'green',
-        },
-        {
             id: 'metaworld',
             name: t.benchmarkDesc.metaworld.name,
             description: t.benchmarkDesc.metaworld.description,
@@ -115,6 +102,19 @@ export default function Home() {
                 score: m.score,
             })) || [],
             color: 'purple',
+        },
+        {
+            id: 'calvin',
+            name: t.benchmarkDesc.calvin.name,
+            description: t.benchmarkDesc.calvin.description,
+            metric: t.benchmarkDesc.calvin.metric,
+            modelCount: summaryData?.calvin.standard_opensource_count || 0,
+            topModels: summaryData?.calvin.top_5.map(m => ({
+                rank: m.rank,
+                name: m.name,
+                score: m.score,
+            })) || [],
+            color: 'green',
         },
     ];
 
