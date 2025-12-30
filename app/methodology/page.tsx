@@ -311,11 +311,11 @@ export default function MethodologyPage() {
                             href="https://github.com/sylvestf/LIBERO-plus"
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="bg-cyan-50 border border-cyan-200 rounded-lg p-4 hover:shadow-md transition-shadow"
+                            className="bg-orange-50 border border-orange-200 rounded-lg p-4 hover:shadow-md transition-shadow"
                         >
-                            <h3 className="font-semibold text-cyan-800">LIBERO Plus</h3>
-                            <p className="text-sm text-cyan-600 mt-1">Average Success Rate (%)</p>
-                            <p className="text-xs text-cyan-500 mt-2">Extended LIBERO with 6 categories</p>
+                            <h3 className="font-semibold text-orange-800">LIBERO Plus</h3>
+                            <p className="text-sm text-orange-600 mt-1">Average Success Rate (%)</p>
+                            <p className="text-xs text-orange-500 mt-2">Extended LIBERO with 6 categories</p>
                         </a>
                         <a
                             href="https://github.com/mees/calvin"
