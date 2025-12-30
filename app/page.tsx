@@ -45,6 +45,12 @@ interface SummaryData {
         standard_opensource_count: number;
         top_5: { name: string; score: number; rank: number }[];
     };
+    libero_plus: {
+        total_models: number;
+        standard_opensource_count: number;
+        standard_opensource_mixsft_count: number;
+        top_5: { name: string; score: number; rank: number }[];
+    };
     calvin: {
         total_models: number;
         standard_opensource_count: number;
@@ -75,7 +81,7 @@ export default function Home() {
         loadData();
     }, []);
 
-    // 构建 benchmarks 数据 - metaworld 放在中间
+    // 构建 benchmarks 数据 - 顺序: libero, libero plus, metaworld, calvin
     const benchmarks = [
         {
             id: 'libero',
@@ -89,6 +95,19 @@ export default function Home() {
                 score: m.score,
             })) || [],
             color: 'blue',
+        },
+        {
+            id: 'liberoplus',
+            name: t.benchmarkDesc.liberoPlus.name,
+            description: t.benchmarkDesc.liberoPlus.description,
+            metric: t.benchmarkDesc.liberoPlus.metric,
+            modelCount: (summaryData?.libero_plus.standard_opensource_count || 0) + (summaryData?.libero_plus.standard_opensource_mixsft_count || 0),
+            topModels: summaryData?.libero_plus.top_5.map(m => ({
+                rank: m.rank,
+                name: m.name,
+                score: m.score,
+            })) || [],
+            color: 'orange',
         },
         {
             id: 'metaworld',
@@ -125,6 +144,13 @@ export default function Home() {
             text: 'text-blue-600',
             badge: 'bg-blue-100 text-blue-800',
             button: 'bg-blue-600 hover:bg-blue-700',
+        },
+        orange: {
+            bg: 'bg-orange-50',
+            border: 'border-orange-200',
+            text: 'text-orange-600',
+            badge: 'bg-orange-100 text-orange-800',
+            button: 'bg-orange-600 hover:bg-orange-700',
         },
         green: {
             bg: 'bg-emerald-50',
@@ -197,7 +223,7 @@ export default function Home() {
                         {t.nav.benchmarks}
                     </h2>
 
-                    <div className="grid md:grid-cols-3 gap-8">
+                    <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
                         {benchmarks.map((benchmark) => {
                             const colors = colorClasses[benchmark.color as keyof typeof colorClasses];
                             return (

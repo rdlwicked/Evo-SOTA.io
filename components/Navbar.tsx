@@ -23,8 +23,9 @@ export default function Navbar() {
 
     const benchmarks = [
         { name: 'LIBERO', href: '/benchmarks/libero' },
-        { name: 'CALVIN', href: '/benchmarks/calvin' },
+        { name: 'LIBERO Plus', href: '/benchmarks/liberoplus' },
         { name: 'Meta-World', href: '/benchmarks/metaworld' },
+        { name: 'CALVIN', href: '/benchmarks/calvin' },
     ];
 
     // 获取 basePath

@@ -84,6 +84,11 @@ type TranslationType = {
             description: string;
             metric: string;
         };
+        liberoPlus: {
+            name: string;
+            description: string;
+            metric: string;
+        };
     };
     methodology: {
         title: string;

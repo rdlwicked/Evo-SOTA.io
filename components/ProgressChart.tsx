@@ -21,6 +21,7 @@ interface DataPoint {
     score: number;
     benchmark: string;
     paper_url?: string;
+    is_opensource?: boolean;
 }
 
 interface LiberoModel {
@@ -28,6 +29,7 @@ interface LiberoModel {
     pub_date: string | null;
     average: number | null;
     paper_url?: string | null;
+    is_opensource?: boolean;
 }
 
 interface CalvinModel {
@@ -35,6 +37,7 @@ interface CalvinModel {
     pub_date: string | null;
     avg_len: number | null;
     paper_url?: string | null;
+    is_opensource?: boolean;
 }
 
 interface MetaworldModel {
@@ -42,6 +45,15 @@ interface MetaworldModel {
     pub_date: string | null;
     average: number | null;
     paper_url?: string | null;
+    is_opensource?: boolean;
+}
+
+interface LiberoPlusModel {
+    name: string;
+    pub_date: string | null;
+    total: number | null;
+    paper_url?: string | null;
+    is_opensource?: boolean;
 }
 
 // 新的分类数据结构
@@ -63,6 +75,16 @@ interface CalvinData {
     d_d: CalvinSettingData;
 }
 
+// LIBERO Plus 的分类数据结构
+interface LiberoPlusCategorizedData {
+    standard_opensource: LiberoPlusModel[];
+    standard_opensource_mixsft: LiberoPlusModel[];
+    standard_closed: LiberoPlusModel[];
+    standard_closed_mixsft: LiberoPlusModel[];
+    non_standard: LiberoPlusModel[];
+    non_standard_mixsft: LiberoPlusModel[];
+}
+
 // 自定义 Tooltip
 const CustomTooltip = ({ active, payload }: { active?: boolean; payload?: Array<{ payload: DataPoint }> }) => {
     if (active && payload && payload.length) {
@@ -73,8 +95,9 @@ const CustomTooltip = ({ active, payload }: { active?: boolean; payload?: Array<
                 <p className="text-sm text-slate-600">{data.dateStr}</p>
                 <p className="text-sm">
                     <span className={`font-medium ${data.benchmark === 'LIBERO' ? 'text-blue-600' :
-                        data.benchmark === 'CALVIN' ? 'text-emerald-600' :
-                            'text-purple-600'
+                        data.benchmark === 'LIBERO Plus' ? 'text-orange-600' :
+                            data.benchmark === 'CALVIN' ? 'text-emerald-600' :
+                                'text-purple-600'
                         }`}>
                         {data.benchmark}
                     </span>
@@ -89,10 +112,12 @@ const CustomTooltip = ({ active, payload }: { active?: boolean; payload?: Array<
 export default function ProgressChart() {
     const { locale } = useLanguage();
     const [liberoData, setLiberoData] = useState<DataPoint[]>([]);
+    const [liberoPlusData, setLiberoPlusData] = useState<DataPoint[]>([]);
     const [calvinData, setCalvinData] = useState<DataPoint[]>([]);
     const [metaworldData, setMetaworldData] = useState<DataPoint[]>([]);
-    const [selectedBenchmarks, setSelectedBenchmarks] = useState<string[]>(['LIBERO', 'CALVIN', 'Meta-World']);
+    const [selectedBenchmarks, setSelectedBenchmarks] = useState<string[]>(['LIBERO', 'LIBERO Plus', 'Meta-World', 'CALVIN']);
     const [showTopOnly, setShowTopOnly] = useState(false);
+    const [showOpenSourceOnly, setShowOpenSourceOnly] = useState(false);
 
     // 解析日期字符串为时间戳
     const parseDate = useCallback((dateStr: string): number => {
@@ -115,20 +140,22 @@ export default function ProgressChart() {
                 // 使用 basePath
                 const basePath = process.env.NODE_ENV === 'production' ? '/Evo-SOTA.io' : '';
 
-                const [liberoRes, calvinRes, metaworldRes] = await Promise.all([
+                const [liberoRes, liberoPlusRes, calvinRes, metaworldRes] = await Promise.all([
                     fetch(`${basePath}/data/libero.json`),
+                    fetch(`${basePath}/data/liberoPlus.json`),
                     fetch(`${basePath}/data/calvin.json`),
                     fetch(`${basePath}/data/metaworld.json`)
                 ]);
 
                 const libero: CategorizedData<LiberoModel> = await liberoRes.json();
+                const liberoPlus: LiberoPlusCategorizedData = await liberoPlusRes.json();
                 const calvin: CalvinData = await calvinRes.json();
                 const metaworld: CategorizedData<MetaworldModel> = await metaworldRes.json();
 
                 // 只使用标准模型数据（standard_opensource + standard_closed）
                 const standardLibero = [
-                    ...libero.standard_opensource,
-                    ...libero.standard_closed
+                    ...libero.standard_opensource.map(m => ({ ...m, is_opensource: true })),
+                    ...libero.standard_closed.map(m => ({ ...m, is_opensource: false }))
                 ];
 
                 // 处理 LIBERO 数据
@@ -140,13 +167,33 @@ export default function ProgressChart() {
                         dateStr: formatDate(m.pub_date!),
                         score: m.average!,
                         benchmark: 'LIBERO',
-                        paper_url: m.paper_url || undefined
+                        paper_url: m.paper_url || undefined,
+                        is_opensource: m.is_opensource
+                    }));
+
+                // 处理 LIBERO Plus 数据
+                const standardLiberoPlus = [
+                    ...(liberoPlus.standard_opensource || []).map(m => ({ ...m, is_opensource: true })),
+                    ...(liberoPlus.standard_opensource_mixsft || []).map(m => ({ ...m, is_opensource: true })),
+                    ...(liberoPlus.standard_closed || []).map(m => ({ ...m, is_opensource: false })),
+                    ...(liberoPlus.standard_closed_mixsft || []).map(m => ({ ...m, is_opensource: false }))
+                ];
+                const liberoPlusPoints: DataPoint[] = standardLiberoPlus
+                    .filter(m => m.total !== null && m.pub_date)
+                    .map(m => ({
+                        name: m.name,
+                        date: parseDate(m.pub_date!),
+                        dateStr: formatDate(m.pub_date!),
+                        score: m.total!,
+                        benchmark: 'LIBERO Plus',
+                        paper_url: m.paper_url || undefined,
+                        is_opensource: m.is_opensource
                     }));
 
                 // 只使用 CALVIN ABC→D 标准模型
                 const standardCalvinAbcD = [
-                    ...calvin.abc_d.standard_opensource,
-                    ...calvin.abc_d.standard_closed
+                    ...calvin.abc_d.standard_opensource.map(m => ({ ...m, is_opensource: true })),
+                    ...calvin.abc_d.standard_closed.map(m => ({ ...m, is_opensource: false }))
                 ];
 
                 // 处理 CALVIN 数据 (使用 ABC→D 设置)
@@ -158,13 +205,14 @@ export default function ProgressChart() {
                         dateStr: formatDate(m.pub_date!),
                         score: m.avg_len!,
                         benchmark: 'CALVIN',
-                        paper_url: m.paper_url || undefined
+                        paper_url: m.paper_url || undefined,
+                        is_opensource: m.is_opensource
                     }));
 
                 // 只使用 Meta-World 标准模型
                 const standardMetaworld = [
-                    ...metaworld.standard_opensource,
-                    ...metaworld.standard_closed
+                    ...metaworld.standard_opensource.map(m => ({ ...m, is_opensource: true })),
+                    ...metaworld.standard_closed.map(m => ({ ...m, is_opensource: false }))
                 ];
 
                 // 处理 Meta-World 数据
@@ -176,10 +224,12 @@ export default function ProgressChart() {
                         dateStr: formatDate(m.pub_date!),
                         score: m.average!,
                         benchmark: 'Meta-World',
-                        paper_url: m.paper_url || undefined
+                        paper_url: m.paper_url || undefined,
+                        is_opensource: m.is_opensource
                     }));
 
                 setLiberoData(liberoPoints);
+                setLiberoPlusData(liberoPlusPoints);
                 setCalvinData(calvinPoints);
                 setMetaworldData(metaworldPoints);
             } catch (error) {
@@ -192,21 +242,28 @@ export default function ProgressChart() {
 
     // 获取显示的数据
     const getDisplayData = useCallback((data: DataPoint[]) => {
-        if (!showTopOnly) return data;
+        let filteredData = data;
+
+        // 筛选开源模型
+        if (showOpenSourceOnly) {
+            filteredData = filteredData.filter(point => point.is_opensource === true);
+        }
+
+        if (!showTopOnly) return filteredData;
 
         // 按时间分组，每个时间点只保留最高分
         const timeGroups = new Map<number, DataPoint>();
-        data.forEach(point => {
+        filteredData.forEach(point => {
             const existing = timeGroups.get(point.date);
             if (!existing || point.score > existing.score) {
                 timeGroups.set(point.date, point);
             }
         });
         return Array.from(timeGroups.values());
-    }, [showTopOnly]);
+    }, [showTopOnly, showOpenSourceOnly]);
 
     // 计算X轴范围
-    const allDates = [...liberoData, ...calvinData, ...metaworldData].map(d => d.date);
+    const allDates = [...liberoData, ...liberoPlusData, ...calvinData, ...metaworldData].map(d => d.date);
     const minDate = allDates.length ? Math.min(...allDates) : new Date(2023, 0, 1).getTime();
     const maxDate = allDates.length ? Math.max(...allDates) : new Date(2025, 11, 1).getTime();
 
@@ -234,19 +291,23 @@ export default function ProgressChart() {
             title: 'VLA Progress Over Time',
             subtitle: 'Tracking the evolution of Vision-Language-Action models across different benchmarks',
             showTopOnly: 'Show Top Performers Only',
+            showOpenSourceOnly: 'Open-Source Models Only',
             liberoDesc: 'LIBERO: Success Rate (%)',
+            liberoPlusDesc: 'LIBERO Plus: Total Success Rate (%)',
             calvinDesc: 'CALVIN: Avg. Completed Tasks',
             metaworldDesc: 'Meta-World: Success Rate (%)',
-            note: 'Note: CALVIN uses a different metric scale (0-5 tasks) compared to LIBERO and Meta-World (0-100%)',
+            note: 'Note: CALVIN uses a different metric scale (0-5 tasks) compared to LIBERO, LIBERO Plus and Meta-World (0-100%)',
         },
         zh: {
             title: 'VLA 发展历程',
             subtitle: '追踪视觉-语言-动作模型在不同基准测试上的演进',
             showTopOnly: '仅显示最佳表现',
+            showOpenSourceOnly: '仅显示开源模型',
             liberoDesc: 'LIBERO: 成功率 (%)',
+            liberoPlusDesc: 'LIBERO Plus: 总成功率 (%)',
             calvinDesc: 'CALVIN: 平均完成任务数',
             metaworldDesc: 'Meta-World: 成功率 (%)',
-            note: '注：CALVIN 使用不同的指标尺度 (0-5 任务数)，与 LIBERO 和 Meta-World (0-100%) 不同',
+            note: '注：CALVIN 使用不同的指标尺度 (0-5 任务数)，与 LIBERO、LIBERO Plus 和 Meta-World (0-100%) 不同',
         }
     };
 
@@ -266,7 +327,7 @@ export default function ProgressChart() {
 
                 {/* Controls */}
                 <div className="flex flex-wrap justify-center gap-4 mb-6">
-                    <div className="flex items-center gap-2">
+                    <div className="flex flex-wrap items-center gap-2">
                         <button
                             onClick={() => toggleBenchmark('LIBERO')}
                             className={`px-4 py-2 rounded-lg font-medium transition-all ${selectedBenchmarks.includes('LIBERO')
@@ -277,13 +338,13 @@ export default function ProgressChart() {
                             LIBERO
                         </button>
                         <button
-                            onClick={() => toggleBenchmark('CALVIN')}
-                            className={`px-4 py-2 rounded-lg font-medium transition-all ${selectedBenchmarks.includes('CALVIN')
-                                ? 'bg-emerald-600 text-white shadow-md'
-                                : 'bg-white text-emerald-600 border border-emerald-200 hover:bg-emerald-50'
+                            onClick={() => toggleBenchmark('LIBERO Plus')}
+                            className={`px-4 py-2 rounded-lg font-medium transition-all ${selectedBenchmarks.includes('LIBERO Plus')
+                                ? 'bg-orange-600 text-white shadow-md'
+                                : 'bg-white text-orange-600 border border-orange-200 hover:bg-orange-50'
                                 }`}
                         >
-                            CALVIN
+                            LIBERO Plus
                         </button>
                         <button
                             onClick={() => toggleBenchmark('Meta-World')}
@@ -293,6 +354,15 @@ export default function ProgressChart() {
                                 }`}
                         >
                             Meta-World
+                        </button>
+                        <button
+                            onClick={() => toggleBenchmark('CALVIN')}
+                            className={`px-4 py-2 rounded-lg font-medium transition-all ${selectedBenchmarks.includes('CALVIN')
+                                ? 'bg-emerald-600 text-white shadow-md'
+                                : 'bg-white text-emerald-600 border border-emerald-200 hover:bg-emerald-50'
+                                }`}
+                        >
+                            CALVIN
                         </button>
                     </div>
                     <label className="flex items-center gap-2 cursor-pointer">
@@ -304,12 +374,22 @@ export default function ProgressChart() {
                         />
                         <span className="text-sm text-slate-600">{t.showTopOnly}</span>
                     </label>
+                    <label className="flex items-center gap-2 cursor-pointer">
+                        <input
+                            type="checkbox"
+                            checked={showOpenSourceOnly}
+                            onChange={(e) => setShowOpenSourceOnly(e.target.checked)}
+                            className="w-4 h-4 text-green-600 rounded border-gray-300 focus:ring-green-500"
+                        />
+                        <span className="text-sm text-slate-600">{t.showOpenSourceOnly}</span>
+                    </label>
                 </div>
 
-                {/* Charts Grid - 品字形排布，支持动态居中 */}
+                {/* Charts Grid - 支持1-4张图的动态布局 */}
                 {(() => {
                     const activeCharts = [];
                     if (selectedBenchmarks.includes('LIBERO')) activeCharts.push('LIBERO');
+                    if (selectedBenchmarks.includes('LIBERO Plus')) activeCharts.push('LIBERO Plus');
                     if (selectedBenchmarks.includes('Meta-World')) activeCharts.push('Meta-World');
                     if (selectedBenchmarks.includes('CALVIN')) activeCharts.push('CALVIN');
                     const chartCount = activeCharts.length;
@@ -318,6 +398,7 @@ export default function ProgressChart() {
                     // 1张图：居中，占2/3宽度
                     // 2张图：并排居中，各占约1/2宽度
                     // 3张图：品字形（上2下1居中）
+                    // 4张图：田字形 2x2
                     const getGridClass = () => {
                         if (chartCount === 1) return 'flex justify-center';
                         if (chartCount === 2) return 'grid grid-cols-1 lg:grid-cols-2 gap-6';
@@ -332,8 +413,7 @@ export default function ProgressChart() {
                             : '';
                         // 根据图表数量设置宽度
                         // 1张图：占页面2/3宽度（使用内联style）
-                        // 2张图：grid自动处理，各占一格
-                        // 3张图：前两张各占50%，第三张居中显示约50%宽度
+                        // 2-4张图：grid自动处理
                         const chartStyle = chartCount === 1
                             ? { width: '66.67%', minWidth: '400px' }
                             : undefined;
@@ -390,6 +470,63 @@ export default function ProgressChart() {
                                                     name="LIBERO"
                                                     data={getDisplayData(liberoData)}
                                                     fill="#3b82f6"
+                                                    fillOpacity={0.7}
+                                                />
+                                            </ScatterChart>
+                                        </ResponsiveContainer>
+                                    </div>
+                                </div>
+                            );
+                        }
+                        if (benchmark === 'LIBERO Plus') {
+                            return (
+                                <div key="liberoplus" className={chartWrapperClass} style={chartStyle}>
+                                    <div className={`bg-white rounded-xl p-6 shadow-sm border border-slate-200 ${chartClass}`}>
+                                        <h3 className="text-lg font-semibold text-slate-700 mb-4">
+                                            {t.liberoPlusDesc}
+                                        </h3>
+                                        <ResponsiveContainer width="100%" height={350}>
+                                            <ScatterChart margin={{ top: 20, right: 20, bottom: 20, left: 10 }}>
+                                                <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+                                                <XAxis
+                                                    type="number"
+                                                    dataKey="date"
+                                                    domain={[minDate, maxDate]}
+                                                    tickFormatter={formatXAxis}
+                                                    tick={{ fill: '#64748b', fontSize: 12 }}
+                                                    axisLine={{ stroke: '#cbd5e1' }}
+                                                />
+                                                <YAxis
+                                                    type="number"
+                                                    dataKey="score"
+                                                    domain={[0, 100]}
+                                                    tick={{ fill: '#64748b', fontSize: 12 }}
+                                                    axisLine={{ stroke: '#cbd5e1' }}
+                                                    label={{
+                                                        value: 'Total Success Rate (%)',
+                                                        angle: -90,
+                                                        position: 'insideLeft',
+                                                        style: { fill: '#64748b', fontSize: 12 }
+                                                    }}
+                                                />
+                                                <Tooltip content={<CustomTooltip />} />
+                                                <Legend />
+                                                <ReferenceLine
+                                                    x={new Date(2024, 0, 1).getTime()}
+                                                    stroke="#94a3b8"
+                                                    strokeDasharray="5 5"
+                                                    label={{ value: '2024', fill: '#94a3b8', fontSize: 10 }}
+                                                />
+                                                <ReferenceLine
+                                                    x={new Date(2025, 0, 1).getTime()}
+                                                    stroke="#94a3b8"
+                                                    strokeDasharray="5 5"
+                                                    label={{ value: '2025', fill: '#94a3b8', fontSize: 10 }}
+                                                />
+                                                <Scatter
+                                                    name="LIBERO Plus"
+                                                    data={getDisplayData(liberoPlusData)}
+                                                    fill="#f97316"
                                                     fillOpacity={0.7}
                                                 />
                                             </ScatterChart>

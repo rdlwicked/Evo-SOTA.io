@@ -1,9 +1,9 @@
 {
   "libero": {
-    "total_models": 56,
+    "total_models": 57,
     "standard_opensource_count": 32,
     "standard_closed_count": 11,
-    "non_standard_count": 13,
+    "non_standard_count": 14,
     "primary_metric": "Average Success Rate (%)",
     "top_5": [
       {
@@ -27,8 +27,45 @@
         "rank": 4
       },
       {
-        "name": "VLA-Cache (OpenVLA+VLA-Cache)",
-        "score": 97.4,
+        "name": "RIPT-VLA (OpenVLA+RIFT)",
+        "score": 97.5,
+        "rank": 5
+      }
+    ]
+  },
+  "libero_plus": {
+    "total_models": 9,
+    "standard_opensource_count": 8,
+    "standard_opensource_mixsft_count": 1,
+    "standard_closed_count": 0,
+    "standard_closed_mixsft_count": 0,
+    "non_standard_count": 0,
+    "non_standard_mixsft_count": 0,
+    "primary_metric": "Total Success Rate (%)",
+    "top_5": [
+      {
+        "name": "OpenVLA-OFT",
+        "score": 69.6,
+        "rank": 1
+      },
+      {
+        "name": "RIPT-VLA",
+        "score": 68.4,
+        "rank": 2
+      },
+      {
+        "name": "OpenVLA-OFT",
+        "score": 67.9,
+        "rank": 3
+      },
+      {
+        "name": "pi0-FAST",
+        "score": 61.6,
+        "rank": 4
+      },
+      {
+        "name": "pi0",
+        "score": 53.6,
         "rank": 5
       }
     ]

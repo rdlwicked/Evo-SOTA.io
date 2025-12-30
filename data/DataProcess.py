@@ -6,6 +6,7 @@ VLA SOTA 数据处理脚本
 - 处理开源情况字段
 - 处理标准测试规则字段
 - 生成三类数据：标准开源、标准闭源、非标准
+- 新增 LIBERO Plus 榜单支持（包含 mix-sft 策略区分）
 """
 
 import pandas as pd
@@ -157,14 +158,22 @@ def is_standard_eval(value: Any) -> bool:
 def process_libero_data(row: pd.Series) -> Dict[str, Any]:
     """
     处理 Libero benchmark 数据
+    
+    列索引:
+    - 13: Libero Spatial
+    - 14: Libero Object
+    - 15: Libero Goal
+    - 16: Libero Long(10)
+    - 17: Libero 90
+    - 18: Libero Average
     """
     result = {
-        'spatial': parse_value(row.get('Libero Spatial')),
-        'object': parse_value(row.get('Libero Object')),
-        'goal': parse_value(row.get('Libero Goal')),
-        'long': parse_value(row.get('Libero Long(10)')),
-        'libero_90': parse_value(row.get('Libero 90')),
-        'average': parse_value(row.get('Libero Average'))
+        'spatial': parse_value(row.iloc[13]),
+        'object': parse_value(row.iloc[14]),
+        'goal': parse_value(row.iloc[15]),
+        'long': parse_value(row.iloc[16]),
+        'libero_90': parse_value(row.iloc[17]),
+        'average': parse_value(row.iloc[18])
     }
     
     # 如果 average 为空但有其他数据，计算平均值
@@ -180,13 +189,20 @@ def process_libero_data(row: pd.Series) -> Dict[str, Any]:
 def process_metaworld_data(row: pd.Series) -> Dict[str, Any]:
     """
     处理 Meta-World benchmark 数据
+    
+    列索引:
+    - 32: Easy
+    - 33: Medium
+    - 34: Hard
+    - 35: Very Hard
+    - 36: Meta-world Average
     """
     result = {
-        'easy': parse_value(row.get('Easy')),
-        'medium': parse_value(row.get('Medium')),
-        'hard': parse_value(row.get('Hard')),
-        'very_hard': parse_value(row.get('Very Hard')),
-        'average': parse_value(row.get('Meta-world \nAverage'))
+        'easy': parse_value(row.iloc[32]),
+        'medium': parse_value(row.iloc[33]),
+        'hard': parse_value(row.iloc[34]),
+        'very_hard': parse_value(row.iloc[35]),
+        'average': parse_value(row.iloc[36])
     }
     
     # 如果 average 为空但有其他数据，计算平均值
@@ -199,18 +215,88 @@ def process_metaworld_data(row: pd.Series) -> Dict[str, Any]:
     return result
 
 
-def process_calvin_setting(row: pd.Series, prefix: str) -> Dict[str, Any]:
+def process_libero_plus_data(row: pd.Series) -> Dict[str, Any]:
+    """
+    处理 LIBERO Plus benchmark 数据
+    包含 7 个子任务：Camera, Robot, Language, Light, Background, Noise, Layout
+    以及 Total 分数
+    
+    列索引:
+    - 22: Camera
+    - 23: Robot
+    - 24: Language
+    - 25: Light
+    - 26: Background
+    - 27: Noise
+    - 28: Layout
+    - 29: Total
+    """
+    result = {
+        'camera': parse_value(row.iloc[22]),
+        'robot': parse_value(row.iloc[23]),
+        'language': parse_value(row.iloc[24]),
+        'light': parse_value(row.iloc[25]),
+        'background': parse_value(row.iloc[26]),
+        'noise': parse_value(row.iloc[27]),
+        'layout': parse_value(row.iloc[28]),
+        'total': parse_value(row.iloc[29])
+    }
+    
+    # 如果 total 为空但有其他数据，计算平均值
+    if result['total'] is None:
+        valid_scores = [v for v in [
+            result['camera'], result['robot'], result['language'],
+            result['light'], result['background'], result['noise'], result['layout']
+        ] if v is not None]
+        if len(valid_scores) >= 4:
+            result['total'] = round(sum(valid_scores) / len(valid_scores), 2)
+    
+    return result
+
+
+def is_mix_sft(value: Any) -> bool:
+    """
+    判断是否使用 mix-sft 训练策略
+    - 1 或 1.0 表示 mix-sft
+    - 0 或空表示非 mix-sft
+    """
+    if pd.isna(value) or value == '':
+        return False
+    
+    try:
+        num_value = float(value)
+        return num_value == 1.0
+    except (ValueError, TypeError):
+        str_value = str(value).strip()
+        return str_value == '1' or str_value == '1.0'
+
+
+def process_calvin_setting(row: pd.Series, setting: str) -> Dict[str, Any]:
     """
     处理 Calvin 单个设置的数据
-    prefix: 'ABCD-D', 'ABC-D', 或 'D-D'
+    setting: 'ABCD-D', 'ABC-D', 或 'D-D'
+    
+    列索引:
+    - ABCD-D: 39-44 (Inst1-5, Avg. Len.)
+    - ABC-D: 45-50 (Inst1-5, Avg. Len.)
+    - D-D: 51-56 (Inst1-5, Avg. Len.)
     """
+    if setting == 'ABCD-D':
+        base_idx = 39
+    elif setting == 'ABC-D':
+        base_idx = 45
+    elif setting == 'D-D':
+        base_idx = 51
+    else:
+        return {}
+    
     data = {
-        'inst1': parse_value(row.get(f'Calvin {prefix}:\nLH-MTLC Inst1')),
-        'inst2': parse_value(row.get(f'Calvin {prefix}:\nLH-MTLC Inst2')),
-        'inst3': parse_value(row.get(f'Calvin {prefix}:\nLH-MTLC Inst3')),
-        'inst4': parse_value(row.get(f'Calvin {prefix}:\nLH-MTLC Inst4')),
-        'inst5': parse_value(row.get(f'Calvin {prefix}:\nLH-MTLC Inst5')),
-        'avg_len': parse_value(row.get(f'Calvin {prefix}:\nLH-MTLC Avg. Len.'))
+        'inst1': parse_value(row.iloc[base_idx]),
+        'inst2': parse_value(row.iloc[base_idx + 1]),
+        'inst3': parse_value(row.iloc[base_idx + 2]),
+        'inst4': parse_value(row.iloc[base_idx + 3]),
+        'inst5': parse_value(row.iloc[base_idx + 4]),
+        'avg_len': parse_value(row.iloc[base_idx + 5])
     }
     return data
 
@@ -270,15 +356,81 @@ def split_by_category(data_list: List[Dict]) -> Dict[str, List[Dict]]:
     }
 
 
+def split_libero_plus_by_category(data_list: List[Dict]) -> Dict[str, List[Dict]]:
+    """
+    将 LIBERO Plus 数据按开源、标准测试和 mix-sft 情况分类
+    返回六个列表：
+    - standard_opensource: 标准测试 + 开源 + 非 mix-sft
+    - standard_opensource_mixsft: 标准测试 + 开源 + mix-sft
+    - standard_closed: 标准测试 + 未开源 + 非 mix-sft
+    - standard_closed_mixsft: 标准测试 + 未开源 + mix-sft
+    - non_standard: 非标准测试 + 非 mix-sft（附录）
+    - non_standard_mixsft: 非标准测试 + mix-sft（附录）
+    """
+    standard_opensource = []
+    standard_opensource_mixsft = []
+    standard_closed = []
+    standard_closed_mixsft = []
+    non_standard = []
+    non_standard_mixsft = []
+    
+    for item in data_list:
+        is_standard = item.get('is_standard', False)
+        is_opensource = item.get('is_opensource', False)
+        is_mixsft = item.get('is_mixsft', False)
+        
+        if not is_standard:
+            if is_mixsft:
+                non_standard_mixsft.append(item)
+            else:
+                non_standard.append(item)
+        elif is_opensource:
+            if is_mixsft:
+                standard_opensource_mixsft.append(item)
+            else:
+                standard_opensource.append(item)
+        else:
+            if is_mixsft:
+                standard_closed_mixsft.append(item)
+            else:
+                standard_closed.append(item)
+    
+    return {
+        'standard_opensource': standard_opensource,
+        'standard_opensource_mixsft': standard_opensource_mixsft,
+        'standard_closed': standard_closed,
+        'standard_closed_mixsft': standard_closed_mixsft,
+        'non_standard': non_standard,
+        'non_standard_mixsft': non_standard_mixsft
+    }
+
+
 def process_csv():
     """
     主处理函数：读取 CSV 并生成 JSON 文件
+    
+    重要的列索引：
+    - 1: 模型名称
+    - 2: 论文地址
+    - 3: 发布时间
+    - 4: 开源情况
+    - 11: LIBERO Standard Evaluation Rule
+    - 12: LIBERO Note
+    - 19: LIBERO Plus Standard Evaluation Rule
+    - 20: LIBERO Plus mix-sft
+    - 21: LIBERO Plus Note
+    - 30: Meta-World Standard Evaluation Rule
+    - 31: Meta-World Note
+    - 37: CALVIN Standard Evaluation Rule
+    - 38: CALVIN Note
     """
     # 读取 CSV，跳过前两行（标题行）
     df = pd.read_csv('VLA_SOTA.csv', header=1)
     
     # 存储处理后的数据
     all_models = {}  # 按模型名称聚合
+    # LIBERO Plus 需要特殊处理：同一模型的 mix-sft 和 non-mix-sft 版本分别存储
+    libero_plus_entries = []  # 存储所有 LIBERO Plus 条目
     
     # 遍历每一行
     for idx, row in df.iterrows():
@@ -296,15 +448,20 @@ def process_csv():
         opensource = is_opensource(opensource_value)
         opensource_url = parse_opensource_url(opensource_value)
         
-        # 标准测试规则
-        libero_standard = is_standard_eval(row.get('Standard \nEvaluation \nRule'))
-        metaworld_standard = is_standard_eval(row.get('Standard \nEvaluation \nRule.1'))
-        calvin_standard = is_standard_eval(row.get('Standard \nEvaluation \nRule.2'))
+        # 标准测试规则 - 使用 iloc 索引访问，因为列名包含换行符
+        libero_standard = is_standard_eval(row.iloc[11])
+        libero_plus_standard = is_standard_eval(row.iloc[19])
+        metaworld_standard = is_standard_eval(row.iloc[30])
+        calvin_standard = is_standard_eval(row.iloc[37])
         
-        # Note 字段（用于非标准测试的说明）
-        libero_note = str(row.get('Note', '')) if not pd.isna(row.get('Note')) else ''
-        metaworld_note = str(row.get('Note.1', '')) if not pd.isna(row.get('Note.1')) else ''
-        calvin_note = str(row.get('Note.2', '')) if not pd.isna(row.get('Note.2')) else ''
+        # LIBERO Plus 的 mix-sft 标记（列20）
+        libero_plus_mixsft = is_mix_sft(row.iloc[20])
+        
+        # Note 字段 - 使用 iloc 索引
+        libero_note = str(row.iloc[12]) if not pd.isna(row.iloc[12]) else ''
+        libero_plus_note = str(row.iloc[21]) if not pd.isna(row.iloc[21]) else ''
+        metaworld_note = str(row.iloc[31]) if not pd.isna(row.iloc[31]) else ''
+        calvin_note = str(row.iloc[38]) if not pd.isna(row.iloc[38]) else ''
         
         # 检查是否是原文数据（而非引用自其他论文）
         url_str = str(row.iloc[2]) if not pd.isna(row.iloc[2]) else ''
@@ -315,6 +472,7 @@ def process_csv():
         
         # 处理各 benchmark 数据
         libero = process_libero_data(row)
+        libero_plus = process_libero_plus_data(row)
         metaworld = process_metaworld_data(row)
         
         # Calvin 的三个设置分开处理
@@ -322,7 +480,25 @@ def process_csv():
         calvin_abc_d = process_calvin_setting(row, 'ABC-D')
         calvin_d_d = process_calvin_setting(row, 'D-D')
         
-        # 更新或创建模型记录
+        # === 处理 LIBERO Plus 数据（特殊处理：同一模型的 mix-sft 和 non-mix-sft 分开存储）===
+        if has_benchmark_data(libero_plus, 'libero_plus'):
+            source_info_lp = data_source if not is_original else 'from Libero-plus'
+            # 为 LIBERO Plus 创建独立条目，使用 (name, is_mixsft) 作为唯一键
+            lp_entry = {
+                'name': vla_name,
+                'paper_url': paper_url,
+                'pub_date': pub_date,
+                'is_opensource': opensource,
+                'opensource_url': opensource_url,
+                **libero_plus,
+                'source': source_info_lp,
+                'is_standard': libero_plus_standard,
+                'is_mixsft': libero_plus_mixsft,
+                'note': libero_plus_note
+            }
+            libero_plus_entries.append(lp_entry)
+        
+        # 更新或创建模型记录（用于其他 benchmarks）
         if vla_name not in all_models:
             all_models[vla_name] = {
                 'name': vla_name,
@@ -333,6 +509,7 @@ def process_csv():
                 'libero': None,
                 'libero_standard': None,
                 'libero_note': '',
+                # LIBERO Plus 已单独处理，不再存储在 all_models 中
                 'metaworld': None,
                 'metaworld_standard': None,
                 'metaworld_note': '',
@@ -363,6 +540,8 @@ def process_csv():
                 all_models[vla_name]['libero_standard'] = libero_standard
                 all_models[vla_name]['libero_note'] = libero_note
         
+        # LIBERO Plus 数据已在前面单独处理（存储到 libero_plus_entries）
+        
         if has_benchmark_data(metaworld, 'metaworld'):
             if all_models[vla_name]['metaworld'] is None or is_original:
                 all_models[vla_name]['metaworld'] = {**metaworld, 'source': source_info}
@@ -392,6 +571,7 @@ def process_csv():
     
     # 生成各 benchmark 的独立数据
     libero_data = []
+    # LIBERO Plus 数据直接使用 libero_plus_entries（已包含 mix-sft 区分）
     metaworld_data = []
     calvin_abcd_d_data = []
     calvin_abc_d_data = []
@@ -414,6 +594,8 @@ def process_csv():
                 'note': model['libero_note']
             }
             libero_data.append(entry)
+        
+        # LIBERO Plus 数据已单独处理，不在此循环中
         
         if model['metaworld'] is not None:
             entry = {
@@ -457,8 +639,27 @@ def process_csv():
         
         return result
     
+    def process_libero_plus_benchmark_data(data_list: List[Dict], sort_key: str) -> Dict:
+        """处理 LIBERO Plus 的数据，分类并排序（包含 mix-sft 区分）"""
+        categories = split_libero_plus_by_category(data_list)
+        
+        # 分别对每个类别排序并添加排名
+        result = {
+            'standard_opensource': sort_and_rank(categories['standard_opensource'], sort_key),
+            'standard_opensource_mixsft': sort_and_rank(categories['standard_opensource_mixsft'], sort_key),
+            'standard_closed': sort_and_rank(categories['standard_closed'], sort_key),
+            'standard_closed_mixsft': sort_and_rank(categories['standard_closed_mixsft'], sort_key),
+            'non_standard': sort_and_rank(categories['non_standard'], sort_key),
+            'non_standard_mixsft': sort_and_rank(categories['non_standard_mixsft'], sort_key)
+        }
+        
+        return result
+    
     # 处理 Libero 数据
     libero_processed = process_benchmark_data(libero_data, 'average')
+    
+    # 处理 LIBERO Plus 数据（使用 libero_plus_entries，每个 mix-sft 状态单独记录）
+    libero_plus_processed = process_libero_plus_benchmark_data(libero_plus_entries, 'total')
     
     # 处理 Meta-World 数据
     metaworld_processed = process_benchmark_data(metaworld_data, 'average')
@@ -471,6 +672,9 @@ def process_csv():
     # 保存 JSON 文件
     with open('libero.json', 'w', encoding='utf-8') as f:
         json.dump(libero_processed, f, indent=2, ensure_ascii=False)
+    
+    with open('liberoPlus.json', 'w', encoding='utf-8') as f:
+        json.dump(libero_plus_processed, f, indent=2, ensure_ascii=False)
     
     with open('metaworld.json', 'w', encoding='utf-8') as f:
         json.dump(metaworld_processed, f, indent=2, ensure_ascii=False)
@@ -490,6 +694,13 @@ def process_csv():
         return [{'name': m['name'], 'score': m.get(score_key), 'rank': m['rank']} 
                 for m in data_list[:5]]
     
+    # LIBERO Plus 需要合并 standard_opensource 和 standard_opensource_mixsft 来获取 top5
+    libero_plus_all_opensource = (
+        libero_plus_processed['standard_opensource'] + 
+        libero_plus_processed['standard_opensource_mixsft']
+    )
+    libero_plus_all_opensource = sort_and_rank(libero_plus_all_opensource, 'total')
+    
     summary = {
         'libero': {
             'total_models': len(libero_data),
@@ -498,6 +709,17 @@ def process_csv():
             'non_standard_count': len(libero_processed['non_standard']),
             'primary_metric': 'Average Success Rate (%)',
             'top_5': get_top5(libero_processed['standard_opensource'], 'average')
+        },
+        'libero_plus': {
+            'total_models': len(libero_plus_entries),
+            'standard_opensource_count': len(libero_plus_processed['standard_opensource']),
+            'standard_opensource_mixsft_count': len(libero_plus_processed['standard_opensource_mixsft']),
+            'standard_closed_count': len(libero_plus_processed['standard_closed']),
+            'standard_closed_mixsft_count': len(libero_plus_processed['standard_closed_mixsft']),
+            'non_standard_count': len(libero_plus_processed['non_standard']),
+            'non_standard_mixsft_count': len(libero_plus_processed['non_standard_mixsft']),
+            'primary_metric': 'Total Success Rate (%)',
+            'top_5': get_top5(libero_plus_all_opensource, 'total')
         },
         'metaworld': {
             'total_models': len(metaworld_data),
@@ -537,6 +759,14 @@ def process_csv():
     print(f"  - 标准闭源: {len(libero_processed['standard_closed'])} 个模型")
     print(f"  - 非标准 (附录): {len(libero_processed['non_standard'])} 个模型")
     print()
+    print("LIBERO Plus 榜单:")
+    print(f"  - 标准开源 (非 mix-sft): {len(libero_plus_processed['standard_opensource'])} 个模型")
+    print(f"  - 标准开源 (mix-sft): {len(libero_plus_processed['standard_opensource_mixsft'])} 个模型")
+    print(f"  - 标准闭源 (非 mix-sft): {len(libero_plus_processed['standard_closed'])} 个模型")
+    print(f"  - 标准闭源 (mix-sft): {len(libero_plus_processed['standard_closed_mixsft'])} 个模型")
+    print(f"  - 非标准 (非 mix-sft): {len(libero_plus_processed['non_standard'])} 个模型")
+    print(f"  - 非标准 (mix-sft): {len(libero_plus_processed['non_standard_mixsft'])} 个模型")
+    print()
     print("Meta-World 榜单:")
     print(f"  - 标准开源: {len(metaworld_processed['standard_opensource'])} 个模型")
     print(f"  - 标准闭源: {len(metaworld_processed['standard_closed'])} 个模型")
@@ -554,14 +784,18 @@ def process_csv():
     print("=" * 60)
     print("\n生成的文件:")
     print("  - libero.json: Libero 榜单数据 (含三个分类)")
+    print("  - liberoPlus.json: LIBERO Plus 榜单数据 (含六个分类，区分 mix-sft)")
     print("  - metaworld.json: Meta-World 榜单数据 (含三个分类)")
     print("  - calvin.json: Calvin 榜单数据 (三个设置 × 三个分类)")
     print("  - data.json: 汇总数据（用于主页）")
     print()
     print("数据分类说明:")
     print("  - standard_opensource: 使用标准测试规则 + 已开源（默认显示）")
+    print("  - standard_opensource_mixsft: 使用标准测试规则 + 已开源 + mix-sft 策略 (仅 LIBERO Plus)")
     print("  - standard_closed: 使用标准测试规则 + 未开源（可选显示）")
+    print("  - standard_closed_mixsft: 使用标准测试规则 + 未开源 + mix-sft 策略 (仅 LIBERO Plus)")
     print("  - non_standard: 未使用标准测试规则（附录）")
+    print("  - non_standard_mixsft: 未使用标准测试规则 + mix-sft 策略 (仅 LIBERO Plus)")
 
 
 if __name__ == '__main__':

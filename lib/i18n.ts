@@ -94,6 +94,11 @@ export const translations = {
                 description: 'Meta-World is a benchmark for meta-reinforcement learning and multi-task learning with 50 distinct robotic manipulation tasks.',
                 metric: 'Average Success Rate (%)',
             },
+            liberoPlus: {
+                name: 'LIBERO Plus',
+                description: 'LIBERO Plus is an extended benchmark testing robustness across 7 perturbation dimensions: Camera, Robot, Language, Light, Background, Noise, and Layout.',
+                metric: 'Total Success Rate (%)',
+            },
         },
         // Methodology 页面
         methodology: {
@@ -203,6 +208,11 @@ export const translations = {
                 name: 'Meta-World',
                 description: 'Meta-World 是一个元强化学习和多任务学习基准，包含 50 个不同的机器人操作任务。',
                 metric: '平均成功率 (%)',
+            },
+            liberoPlus: {
+                name: 'LIBERO Plus',
+                description: 'LIBERO Plus 是一个扩展基准测试，测试模型在 7 个扰动维度上的鲁棒性：相机、机器人、语言、光照、背景、噪声和布局。',
+                metric: '总成功率 (%)',
             },
         },
         // Methodology 页面
