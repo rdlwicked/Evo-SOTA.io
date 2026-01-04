@@ -30,13 +30,11 @@ export default function StatsOverview() {
     useEffect(() => {
         const loadStats = async () => {
             try {
-                const basePath = process.env.NODE_ENV === 'production' ? '/Evo-SOTA.io' : '';
-
                 const [liberoRes, liberoPlusRes, calvinRes, metaworldRes] = await Promise.all([
-                    fetch(`${basePath}/data/libero.json`),
-                    fetch(`${basePath}/data/liberoPlus.json`),
-                    fetch(`${basePath}/data/calvin.json`),
-                    fetch(`${basePath}/data/metaworld.json`)
+                    fetch(`/data/libero.json`),
+                    fetch(`/data/liberoPlus.json`),
+                    fetch(`/data/calvin.json`),
+                    fetch(`/data/metaworld.json`)
                 ]);
 
                 const libero = await liberoRes.json();

@@ -5,8 +5,9 @@ const nextConfig = {
     images: {
         unoptimized: true,
     },
-    basePath: process.env.NODE_ENV === 'production' ? '/Evo-SOTA.io' : '',
-    assetPrefix: process.env.NODE_ENV === 'production' ? '/Evo-SOTA.io/' : '',
+    // 使用自定义域名后不需要 basePath 和 assetPrefix
+    basePath: '',
+    assetPrefix: '',
 }
 
 module.exports = nextConfig

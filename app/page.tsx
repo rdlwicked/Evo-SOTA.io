@@ -71,8 +71,7 @@ export default function Home() {
     useEffect(() => {
         const loadData = async () => {
             try {
-                const basePath = process.env.NODE_ENV === 'production' ? '/Evo-SOTA.io' : '';
-                const res = await fetch(`${basePath}/data/data.json`);
+                const res = await fetch(`/data/data.json`);
                 const json = await res.json();
                 setSummaryData(json);
             } catch (error) {

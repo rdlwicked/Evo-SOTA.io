@@ -20,14 +20,12 @@ export default function RootLayout({
 }: {
     children: React.ReactNode;
 }) {
-    const basePath = process.env.NODE_ENV === 'production' ? '/Evo-SOTA.io' : '';
-
     return (
         <html lang="en">
             <head>
-                <link rel="icon" href={`${basePath}/logo/EvoMind0.png`} />
-                <link rel="shortcut icon" href={`${basePath}/logo/EvoMind0.png`} />
-                <link rel="apple-touch-icon" href={`${basePath}/logo/EvoMind0.png`} />
+                <link rel="icon" href="/logo/EvoMind0.png" />
+                <link rel="shortcut icon" href="/logo/EvoMind0.png" />
+                <link rel="apple-touch-icon" href="/logo/EvoMind0.png" />
             </head>
             <body className={`${inter.variable} font-sans`}>
                 <LanguageProvider>

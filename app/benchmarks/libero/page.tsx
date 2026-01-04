@@ -96,8 +96,7 @@ export default function LiberoPage() {
     useEffect(() => {
         const loadData = async () => {
             try {
-                const basePath = process.env.NODE_ENV === 'production' ? '/Evo-SOTA.io' : '';
-                const res = await fetch(`${basePath}/data/libero.json`);
+                const res = await fetch(`/data/libero.json`);
                 const json = await res.json();
                 setData(json);
             } catch (error) {

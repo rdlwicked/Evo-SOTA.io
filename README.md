@@ -4,7 +4,7 @@
 
 A comprehensive leaderboard tracking the state-of-the-art (SOTA) performance of Vision-Language-Action (VLA) models across multiple robotics benchmarks.
 
-🌐 **Live Demo**: [https://mint-sjtu.github.io/Evo-SOTA.io](https://mint-sjtu.github.io/Evo-SOTA.io)
+🌐 **Live Demo**: [https://sota.evomind-tech.com](https://sota.evomind-tech.com)
 
 ## 📊 Supported Benchmarks
 

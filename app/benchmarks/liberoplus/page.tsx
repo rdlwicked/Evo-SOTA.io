@@ -152,8 +152,7 @@ export default function LiberoPlusPage() {
     useEffect(() => {
         const loadData = async () => {
             try {
-                const basePath = process.env.NODE_ENV === 'production' ? '/Evo-SOTA.io' : '';
-                const res = await fetch(`${basePath}/data/liberoPlus.json`);
+                const res = await fetch(`/data/liberoPlus.json`);
                 const json = await res.json();
                 setData(json);
             } catch (error) {
