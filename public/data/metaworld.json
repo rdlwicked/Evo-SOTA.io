@@ -26,7 +26,7 @@
       "medium": 67.72,
       "hard": 76.67,
       "very_hard": 81.0,
-      "average": 77.74,
+      "average": 77.7,
       "source": "original",
       "is_standard": true,
       "note": "RoboTron-Mani 采用了自定义的数据生成协议， 而不是标准的训练数据， 但是介于很多别的论文也干了。原文：“ To address the lack of training data for simulation learning, we adopt the scripted policies from Yu et al. [68] and introduce Gaussian noise N(0, 0.1) to the generated actions at each step, resulting in a total of 22,500 trajectories, with each task producing 500 successful trajectories. ”",

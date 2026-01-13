@@ -112,7 +112,7 @@ This project is open source and available under the [MIT License](LICENSE).
 
 - Thanks to all researchers who contributed to the VLA field
 - Benchmark creators: LIBERO, LIBERO Plus, CALVIN, Meta-World teams
-- [Busuanzi](http://busuanzi.ibruce.info/) for visitor statistics
+- [https://github.com/EvanNotFound/vercount](https://github.com/EvanNotFound/vercount) for visitor statistics
 
 ---
 
